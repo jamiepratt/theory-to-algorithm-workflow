@@ -1,0 +1,8 @@
+# Independently cloned publication repository; keep only Jamie's source here too.
+/clojurecivitas.github.io/*
+!/clojurecivitas.github.io/src/
+/clojurecivitas.github.io/src/*
+!/clojurecivitas.github.io/src/language_learning/
+/clojurecivitas.github.io/src/language_learning/*
+!/clojurecivitas.github.io/src/language_learning/vocabulary_estimation/
+!/clojurecivitas.github.io/src/language_learning/vocabulary_estimation/**
