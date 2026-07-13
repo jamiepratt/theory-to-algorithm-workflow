@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en" data-theme="luxury">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surface-form vocabulary estimation — stage one</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+    body { margin: 0; overflow-x: hidden; }
+    :where(.grid, .flex) > * { min-width: 0; }
+    :where(p, h1, h2, h3, li, td, th, code, .badge) { overflow-wrap: anywhere; }
+    :where(img, svg, video, canvas, iframe) { max-width: 100%; height: auto; }
+    .deck-slide {
+      min-height: calc(100svh - 4.5rem);
+      scroll-snap-align: start;
+      scroll-margin-top: 4.5rem;
+      display: grid;
+      align-content: center;
+      padding: clamp(2rem, 5vw, 5rem) clamp(1.25rem, 6vw, 7rem);
+      position: relative;
+      isolation: isolate;
+    }
+    .deck-slide::before {
+      content: attr(data-number);
+      position: absolute;
+      right: clamp(1.25rem, 4vw, 4rem);
+      bottom: 1.25rem;
+      font: 600 clamp(3rem, 9vw, 8rem)/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      opacity: .035;
+      z-index: -1;
+    }
+    .deck-kicker { letter-spacing: .18em; text-transform: uppercase; }
+    .deck-display { font-size: clamp(2.4rem, 6vw, 5.5rem); line-height: 1.06; letter-spacing: -.045em; padding-bottom: .08em; }
+    .deck-title { font-size: clamp(2rem, 4vw, 4rem); line-height: 1.12; letter-spacing: -.035em; padding-bottom: .08em; }
+    .deck-lede { font-size: clamp(1.05rem, 2vw, 1.5rem); line-height: 1.55; }
+    .deck-big-number { font-size: clamp(3rem, 8vw, 7rem); line-height: 1.05; letter-spacing: -.055em; padding-bottom: .06em; }
+    .deck-formula { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .deck-strata { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: .45rem; }
+    .deck-stratum { min-height: 10rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .deck-bar { height: .55rem; border-radius: 999px; background: color-mix(in srgb, currentColor 14%, transparent); overflow: hidden; }
+    .deck-bar > span { display: block; height: 100%; border-radius: inherit; background: currentColor; }
+    .deck-progress { transition: width .25s ease; }
+    .deck-nav { backdrop-filter: blur(14px); }
+    .deck-mermaid svg { margin-inline: auto; max-height: 58vh; }
+    #slide-5, #slide-13 { padding-block: 2.5rem; }
+    #slide-5 .deck-mermaid svg { max-height: 23vh; }
+    .deck-range { position: relative; height: 5rem; color: var(--color-primary); }
+    .deck-range::before { content: ""; position: absolute; left: 7%; right: 7%; top: 2rem; height: .7rem; border-radius: 999px; background: color-mix(in srgb, currentColor 16%, transparent); }
+    .deck-range-band { position: absolute; left: 28%; width: 46%; top: 1.55rem; height: 1.6rem; border-radius: 999px; background: color-mix(in srgb, currentColor 58%, transparent); }
+    .deck-range-dot { position: absolute; left: 50%; top: 1rem; width: 2.7rem; height: 2.7rem; border-radius: 999px; transform: translateX(-50%); background: currentColor; border: .3rem solid var(--color-base-100); }
+    .deck-source { position: static !important; display: block; margin: 1.5rem auto 0; width: min(72rem, calc(100% - 3rem)); font-size: .78rem; line-height: 1.5; opacity: .58; }
+    .deck-slide .badge { height: auto; min-height: 1.75rem; line-height: 1.35; padding-block: .18rem; }
+    .mockup-phone .text-5xl { line-height: 1.12; padding-bottom: .06em; }
+    .deck-result-number { line-height: 1.16; padding-bottom: .08em; }
+    .beta-axis { stroke: var(--color-base-content); stroke-opacity: .4; stroke-width: 1.5; }
+    .beta-grid { stroke: var(--color-base-content); stroke-opacity: .09; stroke-width: 1; }
+    .beta-prior { fill: none; stroke: var(--color-base-content); stroke-opacity: .45; stroke-width: 2; stroke-dasharray: 8 7; }
+    .beta-previous { fill: none; stroke: var(--color-base-content); stroke-opacity: .34; stroke-width: 3; }
+    .beta-evidence { fill: none; stroke: var(--color-info); stroke-width: 3; stroke-dasharray: 3 7; }
+    .beta-posterior { fill: none; stroke: var(--color-primary); stroke-width: 5; }
+    .beta-area { fill: color-mix(in srgb, var(--color-primary) 18%, transparent); }
+    .beta-label { fill: var(--color-base-content); font-size: 14px; }
+    @media (max-width: 850px) {
+      html { scroll-snap-type: none; }
+      .deck-slide { min-height: auto; padding-block: 5.5rem 3rem; }
+      .deck-strata { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .deck-stratum { min-height: 7rem; }
+      .deck-mermaid svg { max-height: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .deck-progress { transition: none; }
+    }
+  </style>
+</head>
+<body class="bg-base-200 text-base-content">
+  <header class="deck-nav sticky top-0 z-50 h-[4.5rem] border-b border-base-content/10 bg-base-200/88">
+    <div class="mx-auto flex h-full max-w-[1500px] items-center gap-3 px-4 sm:px-6">
+      <div class="min-w-0 flex-1">
+        <div class="text-sm font-semibold truncate">Surface-form vocabulary estimation</div>
+        <div class="mt-1 h-1 w-full overflow-hidden rounded-full bg-base-content/10">
+          <div id="deck-progress" class="deck-progress h-full bg-primary" style="width:7.69%"></div>
+        </div>
+      </div>
+      <div class="hidden sm:block text-sm opacity-60"><span id="deck-current">1</span> / <span id="deck-total">13</span></div>
+      <button id="deck-prev" class="btn btn-sm btn-ghost" type="button" aria-label="Previous slide">←</button>
+      <button id="deck-next" class="btn btn-sm btn-primary" type="button" aria-label="Next slide">Next →</button>
+    </div>
+  </header>
+
+  <main id="deck">
+    <section id="slide-1" class="deck-slide bg-base-200" data-number="01">
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="deck-kicker text-sm font-semibold text-primary">Stage-one design</div>
+        <h1 class="deck-display mt-6 max-w-5xl font-semibold">Estimate a finite total.<br><span class="opacity-45">Not a vague ability.</span></h1>
+        <p class="deck-lede mt-8 max-w-3xl opacity-75">A short, non-adaptive quiz that estimates receptive knowledge of surface forms—and builds a clean item bank for later calibration.</p>
+        <div class="mt-12 flex flex-wrap items-center gap-3 text-sm opacity-65">
+          <span class="badge badge-outline">14 slides</span>
+          <span>Use ← / → keys or the controls above</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-2" class="deck-slide bg-base-300" data-number="02">
+      <div class="mx-auto grid w-full max-w-6xl items-center gap-12 md:grid-cols-[1.05fr_.95fr]">
+        <div>
+          <div class="deck-kicker text-sm font-semibold text-primary">The construct</div>
+          <h2 class="deck-title mt-5 font-semibold">Say exactly what the number means.</h2>
+          <p class="deck-lede mt-7 opacity-75">The estimand is receptive knowledge of individual target-language <strong>surface forms</strong> inside a fixed, versioned pool.</p>
+        </div>
+        <div class="card border border-primary/30 bg-base-100 shadow-xl">
+          <div class="card-body gap-6">
+            <div class="text-sm uppercase tracking-widest opacity-55">Recommended result label</div>
+            <blockquote class="text-2xl sm:text-3xl font-semibold leading-tight">“Estimated receptive knowledge: 3,850 surface forms from our Pre‑A1–B1 pool.”</blockquote>
+            <div class="divider my-0"></div>
+            <p class="opacity-70">Not “words known in the language.” Not lemmas. Not productive vocabulary.</p>
+          </div>
+        </div>
+      </div>
+      <p class="deck-source absolute bottom-5 left-6 right-6">CEFR is language-independent; language-specific form inventories require separate operational definitions. Council of Europe, Reference Level Descriptions.</p>
+    </section>
+
+    <section id="slide-3" class="deck-slide bg-base-200" data-number="03">
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="deck-kicker text-sm font-semibold text-primary">Define the universe</div>
+        <h2 class="deck-title mt-5 max-w-4xl font-semibold">Make level pools cumulative.</h2>
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          <article class="card border border-base-content/10 bg-base-100"><div class="card-body p-5"><div class="badge badge-primary">Pre‑A1</div><div class="text-xl font-semibold">Pre‑A1 forms</div></div></article>
+          <article class="card border border-base-content/10 bg-base-100"><div class="card-body p-5"><div class="badge badge-primary">A1</div><div class="text-xl font-semibold">Pre‑A1 → A1</div></div></article>
+          <article class="card border border-base-content/10 bg-base-100"><div class="card-body p-5"><div class="badge badge-primary">A2</div><div class="text-xl font-semibold">Pre‑A1 → A2</div></div></article>
+          <article class="card border border-base-content/10 bg-base-100"><div class="card-body p-5"><div class="badge badge-primary">B1</div><div class="text-xl font-semibold">Pre‑A1 → B1</div></div></article>
+          <article class="card border border-base-content/10 bg-base-100"><div class="card-body p-5"><div class="badge badge-primary">B2</div><div class="text-xl font-semibold">Pre‑A1 → B2</div></div></article>
+          <article class="card border border-base-content/10 bg-base-100"><div class="card-body p-5"><div class="badge badge-primary">C1</div><div class="text-xl font-semibold">Pre‑A1 → C1</div></div></article>
+        </div>
+        <div class="alert alert-warning alert-soft mt-10">
+          <span>If you test only a B1 band, the result is “known B1-band forms”—not total vocabulary through B1.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-4" class="deck-slide bg-base-300" data-number="04">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <div class="deck-kicker text-sm font-semibold text-primary">Balanced sampling</div>
+            <h2 class="deck-title mt-5 max-w-4xl font-semibold">Eight strata. One item from each per round.</h2>
+          </div>
+          <div class="badge badge-lg badge-success badge-soft">Non-adaptive</div>
+        </div>
+        <div class="deck-strata mt-12" aria-label="Eight frequency strata from most to least frequent">
+          <article class="deck-stratum card bg-primary text-primary-content"><div class="card-body p-4"><strong>S1</strong><span class="text-sm opacity-75">Most frequent</span></div></article>
+          <article class="deck-stratum card bg-primary/90 text-primary-content"><div class="card-body p-4"><strong>S2</strong><span class="text-sm opacity-75">High</span></div></article>
+          <article class="deck-stratum card bg-primary/80 text-primary-content"><div class="card-body p-4"><strong>S3</strong><span class="text-sm opacity-75">↑</span></div></article>
+          <article class="deck-stratum card bg-primary/70 text-primary-content"><div class="card-body p-4"><strong>S4</strong><span class="text-sm opacity-75">Middle</span></div></article>
+          <article class="deck-stratum card bg-primary/60"><div class="card-body p-4"><strong>S5</strong><span class="text-sm opacity-75">Middle</span></div></article>
+          <article class="deck-stratum card bg-primary/50"><div class="card-body p-4"><strong>S6</strong><span class="text-sm opacity-75">↓</span></div></article>
+          <article class="deck-stratum card bg-primary/40"><div class="card-body p-4"><strong>S7</strong><span class="text-sm opacity-75">Low</span></div></article>
+          <article class="deck-stratum card bg-primary/30"><div class="card-body p-4"><strong>S8</strong><span class="text-sm opacity-75">Least frequent</span></div></article>
+        </div>
+        <div class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-lg opacity-75">
+          <span>Equal-count rank bins</span><span>•</span><span>Shuffle inside each bin</span><span>•</span><span>Randomize bin order per round</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-5" class="deck-slide bg-base-200" data-number="05">
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="deck-kicker text-sm font-semibold text-primary">The whole algorithm</div>
+        <h2 class="deck-title mt-5 font-semibold">Answers update the estimate—not item choice.</h2>
+        <div class="mt-8 grid gap-4 md:grid-cols-2">
+          <div class="rounded-box bg-base-100 p-5">
+            <div class="badge badge-ghost">1 · Sampling</div>
+            <div class="deck-mermaid mermaid mt-3">
+flowchart LR
+  A["Choose cumulative<br/>level pool"] --> B["Split rank into<br/>8 strata"] --> C["Present one item<br/>per stratum"] --> D["Correct = 1<br/>Don't know = 0"]
+            </div>
+          </div>
+          <div class="rounded-box bg-base-100 p-5">
+            <div class="badge badge-ghost">2 · Inference</div>
+            <div class="deck-mermaid mermaid mt-3">
+flowchart LR
+  E["Update 8 Beta<br/>posteriors"] --> F["Simulate untested<br/>known forms"] --> G["Estimate +<br/>95% interval"] --> H{"Precise enough<br/>or learner quits?"}
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          <div class="alert alert-success alert-soft"><span><strong>Fixed:</strong> item schedule ignores response history.</span></div>
+          <div class="alert alert-info alert-soft"><span><strong>Variable:</strong> test length may depend on uncertainty.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-6" class="deck-slide bg-base-300" data-number="06">
+      <div class="mx-auto grid w-full max-w-6xl items-center gap-10 md:grid-cols-[.9fr_1.1fr]">
+        <div>
+          <div class="deck-kicker text-sm font-semibold text-primary">Bayesian updating</div>
+          <h2 class="deck-title mt-5 font-semibold">Yes—this is Bayes’ theorem.</h2>
+          <p class="deck-lede mt-6 opacity-75">For stratum <span class="deck-formula">h</span>, <span class="deck-formula">pₕ</span> is the unknown proportion of forms this learner knows.</p>
+          <div class="alert alert-info alert-soft mt-7"><span><strong>Posterior</strong> is the correct name for the updated distribution after seeing responses.</span></div>
+        </div>
+        <div class="space-y-4">
+          <div class="card border border-primary/35 bg-base-100"><div class="card-body p-6">
+            <div class="text-sm uppercase tracking-widest opacity-50">Bayes’ theorem in model form</div>
+            <div class="deck-formula mt-2 text-xl sm:text-2xl">posterior ∝ likelihood × prior</div>
+          </div></div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="card bg-base-100"><div class="card-body p-5"><div class="badge badge-success badge-soft">Correct</div><div class="deck-formula text-xl">α ← α + 1</div><p class="text-sm opacity-60">Evidence pushes probability upward.</p></div></div>
+            <div class="card bg-base-100"><div class="card-body p-5"><div class="badge badge-warning badge-soft">Don’t know</div><div class="deck-formula text-xl">β ← β + 1</div><p class="text-sm opacity-60">Evidence pushes probability downward.</p></div></div>
+          </div>
+          <div class="rounded-box bg-base-100 p-6">
+            <div class="deck-formula text-sm sm:text-base opacity-70">prior: pₕ ~ Beta(1,1)</div>
+            <div class="deck-formula mt-2 text-sm sm:text-base opacity-70">likelihood: pₕᵏ (1−pₕ)ⁿ⁻ᵏ</div>
+            <div class="deck-formula mt-3 text-lg sm:text-xl font-semibold text-primary">posterior: pₕ | data ~ Beta(1+k, 1+n−k)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-7-beta" class="deck-slide bg-base-200" data-number="07">
+      <div class="mx-auto grid w-full max-w-7xl items-center gap-8 md:grid-cols-[.8fr_1.2fr]">
+        <div>
+          <div class="deck-kicker text-sm font-semibold text-primary">Interactive posterior</div>
+          <h2 class="deck-title mt-5 font-semibold">Watch each response reshape belief.</h2>
+          <p class="mt-5 text-lg opacity-70">Start with <span class="deck-formula">Beta(1,1)</span>. Correct answers add to <span class="deck-formula">α</span>; Don’t-know answers add to <span class="deck-formula">β</span>.</p>
+          <div class="mt-7 grid grid-cols-2 gap-3">
+            <div class="stat rounded-box bg-base-100 p-4"><div class="stat-title">Correct k</div><div id="beta-k" class="stat-value text-3xl">3</div></div>
+            <div class="stat rounded-box bg-base-100 p-4"><div class="stat-title">Don’t know</div><div id="beta-u" class="stat-value text-3xl">1</div></div>
+          </div>
+          <div id="beta-name" class="deck-formula mt-4 rounded-box bg-primary/10 p-4 text-xl font-semibold text-primary">Posterior: Beta(4,2)</div>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <button id="beta-correct" class="btn btn-success" type="button">+ Correct</button>
+            <button id="beta-unknown" class="btn btn-warning" type="button">+ Don’t know</button>
+            <button id="beta-reset" class="btn btn-ghost" type="button">Reset</button>
+          </div>
+        </div>
+        <div class="card border border-base-content/10 bg-base-100"><div class="card-body p-5">
+          <svg id="beta-chart" viewBox="0 0 640 320" role="img" aria-labelledby="beta-chart-title beta-chart-desc">
+            <title id="beta-chart-title">Prior and posterior Beta distributions</title>
+            <desc id="beta-chart-desc">A dashed uniform prior and a solid posterior probability-density curve that changes after correct and Don’t-know responses. The shaded area beneath the current posterior totals one hundred percent.</desc>
+          </svg>
+          <div class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
+            <span class="flex items-center gap-2"><span class="inline-block w-8 border-t-2 border-dashed border-base-content/50"></span>Prior Beta(1,1)</span>
+            <span class="flex items-center gap-2"><span class="inline-block w-8 border-t-2 border-base-content/40"></span>Before last response</span>
+            <span class="flex items-center gap-2"><span class="inline-block w-8 border-t-2 border-dotted border-info"></span><span id="beta-evidence-label">Last evidence: Don’t know</span></span>
+            <span class="flex items-center gap-2"><span class="inline-block w-8 border-t-4 border-primary"></span>Current posterior</span>
+          </div>
+          <p id="beta-explanation" class="mt-2 text-center text-xs opacity-55">Previous posterior × last-response likelihood, then renormalise, gives the current posterior.</p>
+          <p class="mt-1 text-center text-xs opacity-55"><span class="font-semibold text-base-content/80">How to read it:</span> height is probability density (relative plausibility); the whole shaded area is 100%. The area between any two x-values is the model probability that the learner’s true knowing rate lies in that range.</p>
+          <p class="mt-1 text-center text-xs opacity-45">Evidence likelihood is rescaled vertically for comparison. The Beta function B(α,β) is the distribution’s normalising constant.</p>
+        </div></div>
+      </div>
+    </section>
+
+    <section id="slide-7" class="deck-slide bg-base-200" data-number="08">
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="deck-kicker text-sm font-semibold text-primary">From proportions to a total</div>
+        <h2 class="deck-title mt-5 max-w-5xl font-semibold">Predict the untested forms, then add what was observed.</h2>
+        <div class="mt-12 grid items-stretch gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
+          <article class="card bg-base-100"><div class="card-body"><div class="badge badge-ghost">1</div><h3 class="card-title">Draw a knowing rate</h3><div class="deck-formula text-lg">pₕ* ← Beta posterior</div></div></article>
+          <div class="hidden self-center text-3xl opacity-35 md:block">→</div>
+          <article class="card bg-base-100"><div class="card-body"><div class="badge badge-ghost">2</div><h3 class="card-title">Predict untested forms</h3><div class="deck-formula text-lg">Uₕ* ← Binomial(Nₕ−nₕ, pₕ*)</div></div></article>
+          <div class="hidden self-center text-3xl opacity-35 md:block">→</div>
+          <article class="card border border-primary/40 bg-base-100"><div class="card-body"><div class="badge badge-primary">3</div><h3 class="card-title">Sum all strata</h3><div class="deck-formula text-lg">T* = Σ(kₕ + Uₕ*)</div></div></article>
+        </div>
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          <div class="stat rounded-box bg-base-100"><div class="stat-title">Repeat</div><div class="stat-value text-3xl">50k</div><div class="stat-desc mt-2">posterior simulations</div></div>
+          <div class="stat rounded-box bg-base-100"><div class="stat-title">Point estimate</div><div class="stat-value text-3xl">Mean</div><div class="stat-desc mt-2">of simulated totals</div></div>
+          <div class="stat rounded-box bg-base-100"><div class="stat-title">95% range</div><div class="stat-value text-3xl">2.5–97.5%</div><div class="stat-desc mt-2">simulation quantiles</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-8" class="deck-slide bg-base-300" data-number="09">
+      <div class="mx-auto grid w-full max-w-7xl items-center gap-8 md:grid-cols-[1.1fr_.9fr]">
+        <div>
+          <div class="deck-kicker text-sm font-semibold text-primary">Worked example</div>
+          <h2 class="deck-title mt-5 font-semibold">After 32 answers, honesty means a wide range.</h2>
+          <p class="mt-6 text-lg opacity-70">8,000 forms · 8 strata · 4 answers per stratum</p>
+          <div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="card bg-base-100"><div class="card-body p-4"><div class="text-sm opacity-55">S1</div><div class="text-2xl font-semibold">4 / 4</div></div></div>
+            <div class="card bg-base-100"><div class="card-body p-4"><div class="text-sm opacity-55">S2</div><div class="text-2xl font-semibold">4 / 4</div></div></div>
+            <div class="card bg-base-100"><div class="card-body p-4"><div class="text-sm opacity-55">S3</div><div class="text-2xl font-semibold">3 / 4</div></div></div>
+            <div class="card bg-base-100"><div class="card-body p-4"><div class="text-sm opacity-55">S4</div><div class="text-2xl font-semibold">3 / 4</div></div></div>
+            <div class="card bg-base-100"><div class="card-body p-4"><div class="text-sm opacity-55">S5</div><div class="text-2xl font-semibold">2 / 4</div></div></div>
+            <div class="card bg-base-100"><div class="card-body p-4"><div class="text-sm opacity-55">S6</div><div class="text-2xl font-semibold">1 / 4</div></div></div>
+            <div class="card bg-base-100"><div class="card-body p-4"><div class="text-sm opacity-55">S7</div><div class="text-2xl font-semibold">1 / 4</div></div></div>
+            <div class="card bg-base-100"><div class="card-body p-4"><div class="text-sm opacity-55">S8</div><div class="text-2xl font-semibold">0 / 4</div></div></div>
+          </div>
+        </div>
+        <div class="card border border-primary/40 bg-base-100 shadow-2xl"><div class="card-body p-8 sm:p-10">
+          <div class="text-sm uppercase tracking-widest opacity-50">Posterior result</div>
+          <div class="deck-big-number mt-5 font-semibold">4,340</div>
+          <div class="mt-3 text-xl opacity-65">known surface forms</div>
+          <div class="deck-range mt-7" aria-label="95 percent interval from 3,410 to 5,250 with point estimate 4,340"><div class="deck-range-band"></div><div class="deck-range-dot"></div></div>
+          <div class="flex justify-between text-lg font-semibold"><span>3,410</span><span>5,250</span></div>
+          <p class="mt-5 opacity-65">95% posterior credible interval</p>
+        </div></div>
+      </div>
+      <p class="deck-source absolute bottom-5 left-6 right-6">Illustrative Beta–binomial simulation: Beta(1,1) priors, 500,000 verification draws.</p>
+    </section>
+
+    <section id="slide-9" class="deck-slide bg-base-200" data-number="10">
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="deck-kicker text-sm font-semibold text-primary">Quiz length</div>
+        <h2 class="deck-title mt-5 max-w-5xl font-semibold">“Shortest possible” needs a precision target.</h2>
+        <div class="mt-10 overflow-hidden rounded-box border border-base-content/10 bg-base-100">
+          <table class="table table-lg">
+            <thead><tr><th>Desired 95% half-width</th><th>Rough worst-case questions</th><th>For an 8,000-form pool</th></tr></thead>
+            <tbody>
+              <tr><td>±20% of pool</td><td class="font-semibold">24</td><td>about ±1,600 forms</td></tr>
+              <tr><td>±15% of pool</td><td class="font-semibold">43</td><td>about ±1,200 forms</td></tr>
+              <tr class="bg-primary/10"><td><strong>±10% of pool</strong></td><td class="font-semibold">96</td><td><strong>about ±800 forms</strong></td></tr>
+              <tr><td>±5% of pool</td><td class="font-semibold">384</td><td>about ±400 forms</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-6 opacity-65">These are conservative, unstratified planning values. Stratification may help—but only simulation and pilot data can quantify how much.</p>
+      </div>
+    </section>
+
+    <section id="slide-10" class="deck-slide bg-base-300" data-number="11">
+      <div class="mx-auto grid w-full max-w-6xl items-center gap-10 md:grid-cols-[.95fr_1.05fr]">
+        <div>
+          <div class="deck-kicker text-sm font-semibold text-primary">Launch stopping rule</div>
+          <h2 class="deck-title mt-5 font-semibold">Let uncertainty—not score—decide when enough is enough.</h2>
+          <div class="mt-8 space-y-4 text-lg">
+            <div class="flex gap-4"><span class="badge badge-primary badge-lg">32</span><span>Minimum answers: four per stratum</span></div>
+            <div class="flex gap-4"><span class="badge badge-primary badge-lg">8</span><span>Reassess after each complete round</span></div>
+            <div class="flex gap-4"><span class="badge badge-primary badge-lg">±10%</span><span>Recommend stopping when interval half-width reaches target</span></div>
+            <div class="flex gap-4"><span class="badge badge-primary badge-lg">96</span><span>Soft maximum for stage one</span></div>
+          </div>
+        </div>
+        <div class="mx-auto w-full max-w-sm rounded-[2rem] border-4 border-base-content/75 bg-base-100 p-2 shadow-2xl">
+          <div class="flex min-h-[470px] flex-col rounded-[1.55rem] bg-base-200 p-6">
+              <div class="text-sm opacity-55">Your estimate after 32 questions</div>
+              <div class="mt-10 text-center">
+                <div class="deck-result-number text-5xl font-semibold">4,340</div>
+                <div class="mt-2 opacity-60">surface forms</div>
+              </div>
+              <div class="mt-10 rounded-box bg-base-100 p-5">
+                <div class="text-sm opacity-55">Likely range</div>
+                <div class="mt-2 text-2xl font-semibold">3,410–5,250</div>
+                <progress class="progress progress-primary mt-5 w-full" value="32" max="96"></progress>
+                <div class="mt-2 text-xs opacity-55">8 more answers may narrow this range</div>
+              </div>
+              <div class="mt-auto grid gap-3"><button class="btn btn-primary">Continue</button><button class="btn btn-ghost">Finish with this estimate</button></div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-11" class="deck-slide bg-base-200" data-number="12">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="deck-kicker text-sm font-semibold text-primary">Future calibration</div>
+        <h2 class="deck-title mt-5 max-w-5xl font-semibold">The calibration unit is the complete item—not merely the form.</h2>
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          <article class="card border border-primary/30 bg-base-100"><div class="card-body"><div class="badge badge-primary badge-soft">Identity</div><h3 class="card-title">Immutable item version</h3><p class="opacity-70">Form + intended sense/context + translation + distractors + language pair.</p></div></article>
+          <article class="card bg-base-100"><div class="card-body"><div class="badge badge-ghost">Exposure</div><h3 class="card-title">Balanced randomized queues</h3><p class="opacity-70">Cycle through items within every stratum; never repeat an item for one learner.</p></div></article>
+          <article class="card bg-base-100"><div class="card-body"><div class="badge badge-ghost">Response</div><h3 class="card-title">Keep three outcomes</h3><p class="opacity-70">Correct, wrong, and Don’t know—even if stage-one scoring temporarily collapses the last two.</p></div></article>
+          <article class="card bg-base-100"><div class="card-body"><div class="badge badge-ghost">Position</div><h3 class="card-title">Record order and timing</h3><p class="opacity-70">Question position, response time, option order, device, and voluntary stopping.</p></div></article>
+          <article class="card bg-base-100"><div class="card-body"><div class="badge badge-ghost">Linking</div><h3 class="card-title">Preserve anchors</h3><p class="opacity-70">Cumulative level pools naturally connect calibration scales from Pre‑A1 through C1.</p></div></article>
+          <article class="card bg-base-100"><div class="card-body"><div class="badge badge-ghost">Selection</div><h3 class="card-title">Log inclusion probability</h3><p class="opacity-70">Preserves valid weighting if bank-exposure controls later alter pure random sampling.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-12" class="deck-slide bg-base-300" data-number="13">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="deck-kicker text-sm font-semibold text-primary">Upgrade path</div>
+        <h2 class="deck-title mt-5 font-semibold">Start transparent. Earn complexity with data.</h2>
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <article class="card border-2 border-primary bg-base-100"><div class="card-body p-8"><div class="badge badge-primary">Now</div><div class="mt-5 text-3xl font-semibold">Stratified Beta–binomial</div><p class="mt-4 text-lg opacity-65">Balanced sampling, honest uncertainty, no calibrated item parameters required.</p></div></article>
+          <article class="card border border-base-content/15 bg-base-100"><div class="card-body p-8"><div class="badge badge-info badge-soft">After pilot</div><div class="mt-5 text-3xl font-semibold">Partial pooling</div><p class="mt-4 text-lg opacity-65">Borrow strength across adjacent ranks after coverage simulations show it remains calibrated.</p></div></article>
+          <article class="card border border-base-content/15 bg-base-100"><div class="card-body p-8"><div class="badge badge-success badge-soft">After calibration</div><div class="mt-5 text-3xl font-semibold">IRT + adaptive testing</div><p class="mt-4 text-lg opacity-65">Use estimated item difficulty and separate correct, wrong, and Don’t-know response behaviour.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-13" class="deck-slide bg-base-200" data-number="14">
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="deck-kicker text-sm font-semibold text-primary">Recommended launch specification</div>
+        <h2 class="deck-title mt-5 max-w-5xl font-semibold">A defensible estimate now. A calibratable bank later.</h2>
+        <div class="mt-6 grid gap-5 md:grid-cols-2">
+          <div class="card border border-primary/35 bg-base-100"><div class="card-body">
+            <h3 class="card-title text-2xl">Ship this</h3>
+            <ul class="mt-3 space-y-2 text-base">
+              <li>✓ Cumulative, versioned surface-form pools</li>
+              <li>✓ Eight equal-count frequency strata</li>
+              <li>✓ Round-robin random sampling</li>
+              <li>✓ Beta(1,1) posterior per stratum</li>
+              <li>✓ Posterior simulation of total known</li>
+              <li>✓ Minimum 32; precision target; soft cap 96</li>
+            </ul>
+          </div></div>
+          <div class="card bg-base-100"><div class="card-body">
+            <h3 class="card-title text-2xl">Validate this</h3>
+            <ul class="mt-3 space-y-2 text-base opacity-75">
+              <li>→ Interval coverage under realistic learners</li>
+              <li>→ Frequency-stratum choice: 6 vs 8 vs 10</li>
+              <li>→ Test–retest stability</li>
+              <li>→ Position and voluntary-dropout effects</li>
+              <li>→ Calibration exposure per item</li>
+              <li>→ Wrong versus Don’t-know response model</li>
+            </ul>
+          </div></div>
+        </div>
+        <div class="alert alert-success alert-soft mt-5"><span><strong>Core principle:</strong> do not shorten the interval by hiding uncertainty; shorten the quiz only when validated modelling earns it.</span></div>
+        <div class="mt-5 flex flex-wrap gap-4 text-sm opacity-60">
+          <a class="link" href="https://www150.statcan.gc.ca/n1/pub/12-001-x/2019002/article/00006/02-eng.htm">Statistics Canada: stratified sampling</a>
+          <a class="link" href="https://mc-stan.org/docs/stan-users-guide/poststratification.html">Stan: post-stratification</a>
+          <a class="link" href="https://mc-stan.org/docs/2_28/functions-reference/beta-binomial-distribution.html">Stan: Beta–binomial</a>
+          <a class="link" href="https://www.coe.int/en/web/common-european-framework-reference-languages/reference-level-descriptions">Council of Europe: CEFR RLDs</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.15.0/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, theme: "dark", securityLevel: "strict", flowchart: { curve: "basis", useMaxWidth: true } });
+
+    const slides = Array.from(document.querySelectorAll('.deck-slide'));
+    const current = document.getElementById('deck-current');
+    const total = document.getElementById('deck-total');
+    const progress = document.getElementById('deck-progress');
+    const prev = document.getElementById('deck-prev');
+    const next = document.getElementById('deck-next');
+    total.textContent = String(slides.length);
+    let active = 0;
+
+    const update = index => {
+      active = Math.max(0, Math.min(slides.length - 1, index));
+      current.textContent = String(active + 1);
+      progress.style.width = `${((active + 1) / slides.length) * 100}%`;
+      prev.disabled = active === 0;
+      next.disabled = active === slides.length - 1;
+      next.textContent = active === slides.length - 1 ? 'End' : 'Next →';
+    };
+    const go = index => {
+      update(index);
+      slides[active].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    };
+
+    prev.addEventListener('click', () => go(active - 1));
+    next.addEventListener('click', () => { if (active < slides.length - 1) go(active + 1); });
+    const isEditable = element => element instanceof Element && Boolean(element.closest(
+      'input, textarea, select, button, [contenteditable]:not([contenteditable="false"]), [role="textbox"]'
+    ));
+    addEventListener('keydown', event => {
+      if (isEditable(event.target) || isEditable(document.activeElement)) return;
+      if (['ArrowRight', 'ArrowDown', 'PageDown'].includes(event.key)) { event.preventDefault(); go(active + 1); }
+      if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(event.key)) { event.preventDefault(); go(active - 1); }
+      if (event.key === 'Home') { event.preventDefault(); go(0); }
+      if (event.key === 'End') { event.preventDefault(); go(slides.length - 1); }
+    });
+
+    let scrollFrame = 0;
+    addEventListener('scroll', () => {
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        let nearest = 0;
+        let distance = Infinity;
+        slides.forEach((slide, index) => {
+          const nextDistance = Math.abs(slide.getBoundingClientRect().top - 72);
+          if (nextDistance < distance) { distance = nextDistance; nearest = index; }
+        });
+        update(nearest);
+      });
+    }, { passive: true });
+    update(0);
+
+    const betaChart = document.getElementById('beta-chart');
+    const betaK = document.getElementById('beta-k');
+    const betaU = document.getElementById('beta-u');
+    const betaName = document.getElementById('beta-name');
+    let correctCount = 3;
+    let unknownCount = 1;
+    let previousCorrect = 3;
+    let previousUnknown = 0;
+    let lastResponse = 'unknown';
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svgEl = (tag, attrs = {}, text = '') => {
+      const node = document.createElementNS(svgNS, tag);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+      if (text) node.textContent = text;
+      return node;
+    };
+    const logGamma = z => {
+      const c = [0.9999999999998099, 676.5203681218851, -1259.1392167224028, 771.3234287776531, -176.6150291621406, 12.5073432786869, -0.13857109526572, 0.000009984369578, 0.0000001505632735];
+      if (z < 0.5) return Math.log(Math.PI) - Math.log(Math.sin(Math.PI * z)) - logGamma(1 - z);
+      z -= 1;
+      let x = c[0];
+      for (let i = 1; i < c.length; i += 1) x += c[i] / (z + i);
+      const t = z + 7.5;
+      return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+    };
+    const betaPdf = (x, a, b) => Math.exp((a - 1) * Math.log(x) + (b - 1) * Math.log(1 - x) - (logGamma(a) + logGamma(b) - logGamma(a + b)));
+    const drawBeta = () => {
+      const a = 1 + correctCount;
+      const b = 1 + unknownCount;
+      const previousA = 1 + previousCorrect;
+      const previousB = 1 + previousUnknown;
+      betaK.textContent = String(correctCount);
+      betaU.textContent = String(unknownCount);
+      betaName.textContent = `Posterior: Beta(${a},${b}) · mean ${Math.round(100 * a / (a + b))}%`;
+      Array.from(betaChart.children).forEach(child => {
+        if (!['title', 'desc'].includes(child.tagName)) child.remove();
+      });
+      const W = 640;
+      const H = 320;
+      const m = { left: 76, right: 24, top: 24, bottom: 52 };
+      const samples = Array.from({ length: 151 }, (_, i) => {
+        const x = 0.005 + i / 150 * 0.99;
+        return { x, y: betaPdf(x, a, b), previousY: betaPdf(x, previousA, previousB) };
+      });
+      const yMax = Math.max(1.15, ...samples.flatMap(point => [point.y, point.previousY])) * 1.12;
+      const sx = x => m.left + x * (W - m.left - m.right);
+      const sy = y => H - m.bottom - y / yMax * (H - m.top - m.bottom);
+      [0.25, 0.5, 0.75].forEach(value => betaChart.appendChild(svgEl('line', { x1: sx(value), x2: sx(value), y1: m.top, y2: H - m.bottom, class: 'beta-grid' })));
+      betaChart.appendChild(svgEl('line', { x1: m.left, x2: W - m.right, y1: H - m.bottom, y2: H - m.bottom, class: 'beta-axis' }));
+      betaChart.appendChild(svgEl('line', { x1: m.left, x2: m.left, y1: m.top, y2: H - m.bottom, class: 'beta-axis' }));
+      betaChart.appendChild(svgEl('text', { x: m.left + 8, y: m.top + 16, 'text-anchor': 'start', class: 'beta-label' }, 'probability density'));
+      [0, 0.25, 0.5, 0.75, 1].forEach(value => {
+        betaChart.appendChild(svgEl('text', { x: sx(value), y: H - 24, 'text-anchor': 'middle', class: 'beta-label' }, `${Math.round(value * 100)}%`));
+      });
+      betaChart.appendChild(svgEl('text', { x: (m.left + W - m.right) / 2, y: H - 4, 'text-anchor': 'middle', class: 'beta-label' }, 'proportion of forms known, pₕ'));
+      const priorY = sy(1);
+      betaChart.appendChild(svgEl('path', { d: `M ${m.left} ${priorY} L ${W - m.right} ${priorY}`, class: 'beta-prior' }));
+      if (lastResponse) {
+        const previousCurve = samples.map((point, i) => `${i ? 'L' : 'M'} ${sx(point.x)} ${sy(point.previousY)}`).join(' ');
+        const evidenceCurve = samples.map((point, i) => {
+          const likelihood = lastResponse === 'correct' ? point.x : 1 - point.x;
+          return `${i ? 'L' : 'M'} ${sx(point.x)} ${sy(likelihood * yMax * 0.72)}`;
+        }).join(' ');
+        betaChart.appendChild(svgEl('path', { d: previousCurve, class: 'beta-previous' }));
+        betaChart.appendChild(svgEl('path', { d: evidenceCurve, class: 'beta-evidence' }));
+      }
+      const curve = samples.map((point, i) => `${i ? 'L' : 'M'} ${sx(point.x)} ${sy(point.y)}`).join(' ');
+      const area = `M ${sx(samples[0].x)} ${H - m.bottom} ${curve.replace(/^M/, 'L')} L ${sx(samples.at(-1).x)} ${H - m.bottom} Z`;
+      betaChart.appendChild(svgEl('path', { d: area, class: 'beta-area' }));
+      betaChart.appendChild(svgEl('path', { d: curve, class: 'beta-posterior' }));
+      betaChart.appendChild(svgEl('text', { x: W - m.right - 8, y: m.top + 16, 'text-anchor': 'end', class: 'beta-label' }, 'shaded posterior area = 100%'));
+      const evidenceLabel = document.getElementById('beta-evidence-label');
+      const explanation = document.getElementById('beta-explanation');
+      if (lastResponse === 'correct') {
+        evidenceLabel.textContent = 'Last evidence: Correct · L(p)=p';
+        explanation.textContent = `Beta(${previousA},${previousB}) × p, then renormalise → Beta(${a},${b}).`;
+      } else if (lastResponse === 'unknown') {
+        evidenceLabel.textContent = 'Last evidence: Don’t know · L(p)=1−p';
+        explanation.textContent = `Beta(${previousA},${previousB}) × (1−p), then renormalise → Beta(${a},${b}).`;
+      } else {
+        evidenceLabel.textContent = 'No last response yet';
+        explanation.textContent = 'Add a response to see its likelihood and the resulting posterior update.';
+      }
+      betaChart.querySelector('desc').textContent = `Beta(1,1) prior, previous posterior, ${lastResponse || 'no'} last-response evidence, and Beta(${a},${b}) current posterior.`;
+    };
+    document.getElementById('beta-correct').addEventListener('click', () => {
+      previousCorrect = correctCount; previousUnknown = unknownCount; lastResponse = 'correct'; correctCount += 1; drawBeta();
+    });
+    document.getElementById('beta-unknown').addEventListener('click', () => {
+      previousCorrect = correctCount; previousUnknown = unknownCount; lastResponse = 'unknown'; unknownCount += 1; drawBeta();
+    });
+    document.getElementById('beta-reset').addEventListener('click', () => {
+      correctCount = 0; unknownCount = 0; previousCorrect = 0; previousUnknown = 0; lastResponse = null; drawBeta();
+    });
+    drawBeta();
+  </script>
+</body>
+</html>
