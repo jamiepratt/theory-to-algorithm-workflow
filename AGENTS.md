@@ -98,14 +98,23 @@ pair frequencies.
   than silently making an old learning milestone claim a later model.
 - After editing Clojure files, run `clj-paren-repair <changed-files>` before
   tests.
-- Render this post with:
+- During iteration, render only the affected post:
 
   ```sh
   cd clojurecivitas.github.io
   clojure -M:clay -A:markdown \
     language_learning/vocabulary_estimation/beta_binomial_first_pass.clj
-  quarto render site
+  quarto render \
+    site/language_learning/vocabulary_estimation/beta_binomial_first_pass.qmd
   ```
+
+- Immediately before pushing Civitas changes, run the full-site gate with
+  `quarto render site`. Do not run that 229-page build after every edit.
 
 - Verify Scittle controls, browser console, mobile layout, accessible labels,
   and the generated article before publishing.
+- For every UI control, callout, explanation, chart label, and interactive
+  state, verify foreground/background contrast in both light and dark modes.
+  Derive paired foreground and background colours from the active theme; do
+  not combine a fixed light background with inherited dark-mode text, or the
+  reverse.

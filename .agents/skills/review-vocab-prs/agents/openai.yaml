@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Vocabulary PRs"
+  short_description: "Inspect open PRs and request merge approval"
+  default_prompt: "Use $review-vocab-prs to summarize open pull requests and ask which are safe to approve or merge."
