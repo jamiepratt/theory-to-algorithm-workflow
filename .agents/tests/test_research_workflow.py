@@ -42,6 +42,10 @@ class ResearchWorkflowProfileTest(unittest.TestCase):
         self.assertTrue(article["preview_path"].endswith(".html"))
         self.assertTrue(article["pin_matches_head"])
         self.assertEqual(2, len(article["targeted_render"]))
+        self.assertEqual(
+            "scripts/pre-publish-gate.sh",
+            PROFILE["commands"]["full_publication_gate"],
+        )
 
     def test_missing_field_fails(self):
         profile = copy.deepcopy(PROFILE)
