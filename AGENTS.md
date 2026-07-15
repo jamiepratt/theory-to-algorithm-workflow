@@ -113,6 +113,10 @@ pair frequencies.
 
 - Verify Scittle controls, browser console, mobile layout, accessible labels,
   and the generated article before publishing.
+- When the user is reading or commenting on an article in Codex's internal
+  browser, perform reloads and verification in a separate browser tab. Never
+  claim, reload, navigate, resize, or otherwise disturb the user's reading tab;
+  close only the separate verification tab when checks finish.
 - For every UI control, callout, explanation, chart label, and interactive
   state, verify foreground/background contrast in both light and dark modes.
   Derive paired foreground and background colours from the active theme; do
