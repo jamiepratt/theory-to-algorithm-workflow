@@ -87,6 +87,10 @@ pair frequencies.
 
 ## Local article preview
 
+- Use Clay Live Reload as the default iteration loop for Civitas articles.
+  From `clojurecivitas.github.io/`, start `clojure -M:clay`, keep that process
+  running, and open the URL it serves in Codex's internal browser. A one-shot
+  Clay/Quarto render is not a live-reload session.
 - With no arguments, `clojure -M:clay` should preview the first Civitas article
   and watch all article sources. Keep Clay configured not to launch an external
   browser; open and leave the requested preview in Codex's internal browser.
@@ -98,6 +102,15 @@ pair frequencies.
 - Verify this workflow in a separate internal-browser tab: observe an automatic
   reload after a source edit, follow at least one article link, confirm the
   linked page still looks like Civitas, and check the browser console.
+- Use Clay's live preview while editing `.clj` article content and sibling
+  Scittle `.cljs` interactions. Do not introduce Shadow merely to serve the
+  preview; evaluate Shadow separately only if compiled-CLJS hot code reload is
+  deliberately required.
+- Do not use or start Lavish for Civitas article preview or review unless Jamie
+  explicitly requests it. Use the internal browser directly.
+- Clay's `temp` preview is the fast iteration surface, not final publication
+  proof. Render only the affected Quarto post for publication-layout checks,
+  then run the full-site gate only immediately before pushing.
 
 ## Change discipline
 
