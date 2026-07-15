@@ -29,7 +29,7 @@
   ],
   "articles": {
     "repository": "publication",
-    "source_glob": "src/**/*.clj",
+    "source_glob": "src/language_learning/vocabulary_estimation/*.clj",
     "source_marker": ":clay",
     "source_root": "src",
     "qmd_root": "site",
@@ -44,8 +44,8 @@
       "clojure -M:clay -A:markdown {source_relative}",
       "quarto render {qmd_relative}"
     ],
-    "live_preview": "clojure -M:clay {source_relative}",
-    "default_live_preview": "clojure -M:clay",
+    "live_preview": "../.agents/scripts/vocabulary_preview.sh {source_relative}",
+    "default_live_preview": "../.agents/scripts/vocabulary_preview.sh",
     "full_publication_gate": "quarto render site",
     "validation": [
       "clojure -M:test-clj",
