@@ -18,15 +18,11 @@ below is provisional and must remain versioned.
   [`beta_binomial_first_pass.clj`](../../../clojurecivitas.github.io/src/language_learning/vocabulary_estimation/beta_binomial_first_pass.clj)
 - Browser teaching interaction:
   [`beta_binomial_first_pass_interactive.cljs`](../../../clojurecivitas.github.io/src/language_learning/vocabulary_estimation/beta_binomial_first_pass_interactive.cljs)
-- Local Lavish teaching presentation:
-  `/Users/jamiep/Documents/vocab size estimation/.lavish/vocabulary-size-estimator-presentation.html`
-- Handoff plan for adapting that presentation:
-  `/Users/jamiep/Downloads/PLAN (43).md`
 
-The Lavish presentation supplies the teaching sequence and visual rationale.
-The executable article corrects its worked-example point estimate: the model's
-posterior-predictive mean is `4,334`, not `4,340`. This contract and tests are
-authoritative for implementation.
+Review and annotate the generated article in Codex's internal browser. The
+browser is the teaching and visual-review surface; this contract, tested code,
+and executable assertions remain authoritative for implementation. The
+worked-example posterior-predictive mean is `4,334`.
 
 ## 1. Construct and non-goals
 

@@ -28,12 +28,11 @@ description of the scorer currently deployed at <https://lexibench.com/>.
    — executable article and mathematical examples in the Civitas repository.
 3. [`beta_binomial_first_pass_interactive.cljs`](clojurecivitas.github.io/src/language_learning/vocabulary_estimation/beta_binomial_first_pass_interactive.cljs)
    — educational browser interaction, not the production scorer.
-4. Local teaching artifact, when available:
-   `/Users/jamiep/Documents/vocab size estimation/.lavish/vocabulary-size-estimator-presentation.html`.
 
 If these disagree, prefer tested production code, then the scoring contract,
-then the executable article. The Lavish presentation and old chats explain how
-the design evolved; they are not implementation authority.
+then the executable article. Use the generated article in Codex's internal
+browser for visual review and annotation; rendered browser output is not
+implementation authority.
 
 ## Stable vocabulary and invariants
 
