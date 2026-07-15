@@ -85,6 +85,20 @@ The pair-frequency table is unique by `(surface_form_id, lemma_id)` and has no
 sense ID. FreeDict sense tables are separate and do not provide sense-specific
 pair frequencies.
 
+## Local article preview
+
+- With no arguments, `clojure -M:clay` should preview the first Civitas article
+  and watch all article sources. Keep Clay configured not to launch an external
+  browser; open and leave the requested preview in Codex's internal browser.
+- Treat the local Clay URL as a preview of the Civitas blog, not as a plain Clay
+  document. The current article and pages reached through its relative links
+  must retain the Civitas navbar, theme, styles, title, and complete article
+  metadata. Keep navigation on the same local Clay origin. The preview plumbing
+  lives in `clay.edn` and `src/civitas/clay_main.clj`.
+- Verify this workflow in a separate internal-browser tab: observe an automatic
+  reload after a source edit, follow at least one article link, confirm the
+  linked page still looks like Civitas, and check the browser console.
+
 ## Change discipline
 
 - Keep scoring math pure and portable to `.cljc`; isolate storage, UI, clocks,
