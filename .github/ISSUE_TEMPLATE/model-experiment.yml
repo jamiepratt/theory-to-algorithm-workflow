@@ -1,0 +1,63 @@
+name: Model experiment
+description: Propose one versioned candidate and its precommitted validation gate
+title: "experiment: "
+body:
+  - type: markdown
+    attributes:
+      value: Freeze the gate before examining held-out evidence. A failed gate remains a published result.
+  - type: textarea
+    id: estimand
+    attributes:
+      label: Estimand
+      description: State the population, unit, conditions, reporting language, and exclusions.
+    validations:
+      required: true
+  - type: textarea
+    id: theory
+    attributes:
+      label: Theory and assumptions
+      description: Cite the established theory and identify assumptions needed for measurement.
+    validations:
+      required: true
+  - type: input
+    id: baseline
+    attributes:
+      label: Versioned baseline
+      placeholder: algorithm-id@version
+    validations:
+      required: true
+  - type: textarea
+    id: removed-assumption
+    attributes:
+      label: Removed or tested assumption
+      description: Limit the candidate to one explainable vertical refinement.
+    validations:
+      required: true
+  - type: textarea
+    id: immutable-inputs
+    attributes:
+      label: Immutable inputs
+      description: List dataset, pool, item, fixture, and artifact IDs or hashes.
+    validations:
+      required: true
+  - type: textarea
+    id: seeds
+    attributes:
+      label: Seeds and replay command
+      description: Record every seed, numerical approximation, and deterministic reproduction command.
+    validations:
+      required: true
+  - type: textarea
+    id: gate
+    attributes:
+      label: Precommitted acceptance gate
+      description: Define scenarios, metrics, thresholds, and the exact Boolean promotion rule.
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: Promotion decision record
+      description: Complete after evaluation with results, promotion/non-promotion, consequences, and preserved artifacts.
+    validations:
+      required: true

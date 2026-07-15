@@ -1,0 +1,3 @@
+[submodule "clojurecivitas.github.io"]
+	path = clojurecivitas.github.io
+	url = https://github.com/jamiepratt/clojurecivitas.github.io.git

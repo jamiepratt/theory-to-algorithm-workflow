@@ -1,0 +1,4 @@
+interface:
+  display_name: "Preview Latest Research Article"
+  short_description: "Render and verify the latest research article"
+  default_prompt: "Use $preview-latest-research-article to render and verify the most recently edited executable research article."

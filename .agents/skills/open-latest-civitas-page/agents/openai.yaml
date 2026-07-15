@@ -1,4 +1,0 @@
-interface:
-  display_name: "Open Latest Civitas Page"
-  short_description: "Render and open the latest edited blog page"
-  default_prompt: "Use $open-latest-civitas-page to render and open the most recently edited Civitas page."

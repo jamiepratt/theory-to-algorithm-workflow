@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Research PRs"
+  short_description: "Inspect configured research pull requests safely"
+  default_prompt: "Use $review-research-prs to inspect open research pull requests and recommend safe approval or merge actions."
