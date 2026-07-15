@@ -1,4 +1,0 @@
-interface:
-  display_name: "Publish Vocabulary PRs"
-  short_description: "Commit, push, and open scoped pull requests"
-  default_prompt: "Use $publish-vocab-prs to commit the current scoped changes, push branches, and open pull requests."

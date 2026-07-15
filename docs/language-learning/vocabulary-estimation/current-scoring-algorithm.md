@@ -7,6 +7,10 @@ Algorithm ID: `stratified-beta-binomial-v1`
 
 Decision date: 2026-07-12
 
+Current-status review: 2026-07-15. V1 remains the implementation target after
+`continuous-pair-frequency-logistic-v2` failed its precommitted promotion gate.
+This status records the later decision without rewriting the v1 specification.
+
 This document specifies the first scorer Jamie intends to implement while
 learning and iteratively developing the model. It is detailed enough to build
 equivalent Clojure and ClojureScript implementations. Every modelling choice
@@ -18,6 +22,10 @@ below is provisional and must remain versioned.
   [`beta_binomial_first_pass.clj`](../../../clojurecivitas.github.io/src/language_learning/vocabulary_estimation/beta_binomial_first_pass.clj)
 - Browser teaching interaction:
   [`beta_binomial_first_pass_interactive.cljs`](../../../clojurecivitas.github.io/src/language_learning/vocabulary_estimation/beta_binomial_first_pass_interactive.cljs)
+- Preserved v2 experiment and decision:
+  [`pair_frequency_logistic_v2_article.clj`](../../../clojurecivitas.github.io/src/language_learning/vocabulary_estimation/pair_frequency_logistic_v2_article.clj)
+- Immutable v2 held-out evidence:
+  [`pair_frequency_logistic_v2_held_out.edn`](../../../clojurecivitas.github.io/resources/language_learning/vocabulary_estimation/pair_frequency_logistic_v2_held_out.edn)
 
 Review and annotate the generated article in Codex's internal browser. The
 browser is the teaching and visual-review surface; this contract, tested code,
@@ -344,25 +352,22 @@ Render the Civitas article after scoring changes and verify that its executable
 assertions, worked values, Scittle interaction, browser console, and mobile
 layout still pass.
 
-## 10. Planned refinement sequence
+## 10. V2 non-promotion and future work
 
-The current learning/development path is:
+The continuous-frequency v2 candidate tested the first proposed refinement. It
+improved aggregate coverage and MAE under favourable synthetic scenarios, but
+failed the all-checks promotion rule: held-out worst-cell coverage was 91.95%,
+worst-cell MAE was 21.1% worse than v1, and median length was 64 items rather
+than v1's 40. V2 therefore remains an experimental replayable checkpoint; it
+did not replace this contract.
 
-1. **Continuous frequency:** replace equal-difficulty bins with a model using
-   pair frequency as a continuous predictor; test its predictive value.
-2. **Pool construction:** define how CEFR self-assessment and versioned lexicon
-   inventories determine the tested pair pool.
-3. **Lemma estimation:** use a hierarchical latent-lemma model; do not combine
-   form probabilities as if they were independent.
-4. **Response process:** distinguish wrong from don't-know and estimate
-   guessing/slip behavior rather than using an unvalidated penalty ratio.
-5. **Item calibration:** calibrate the complete immutable item—pair, context,
-   intended meaning, translation, distractors, and language pair.
-6. **IRT/adaptation:** introduce item-response theory and adaptive selection
-   only after calibration data supports them.
-7. **Contexts/senses:** consider repeated contexts and sense-specific latent
-   variables only after stable identifiers and sufficient observations exist.
+Future refinements require a new algorithm version, immutable inputs, explicit
+seeds, a precommitted gate, parity fixtures, a replay/rollback story, and a
+published promotion or non-promotion decision. Track them in GitHub:
 
-Each refinement requires a new algorithm version, updated parity fixtures, an
-explicit migration/replay story, and a follow-up learning post. Preserve v1 as
-a reproducible historical checkpoint.
+- [#2 Define and version CEFR-to-pair pool construction](https://github.com/jamiepratt/theory-to-algorithm-workflow/issues/2)
+- [#3 Model correlated form pairs through latent lemma knowledge](https://github.com/jamiepratt/theory-to-algorithm-workflow/issues/3)
+- [#4 Model correct, wrong, and don't-know separately](https://github.com/jamiepratt/theory-to-algorithm-workflow/issues/4)
+- [#5 Calibrate complete immutable item versions](https://github.com/jamiepratt/theory-to-algorithm-workflow/issues/5)
+- [#6 Evaluate IRT and adaptive selection after calibration](https://github.com/jamiepratt/theory-to-algorithm-workflow/issues/6)
+- [#7 Investigate context and sense models when identifiable](https://github.com/jamiepratt/theory-to-algorithm-workflow/issues/7)
