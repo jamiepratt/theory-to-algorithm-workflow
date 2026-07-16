@@ -15,9 +15,15 @@ candidate that failed its model gate.
 ## Publication validation
 
 Answers: “Can readers inspect the argument and evidence correctly?” Use focused
-rendering during iteration; immediately before publishing, run the configured
-full gate and verify links, interactive controls, console, mobile layout,
-accessible labels, and light/dark contrast.
+rendering during iteration. Immediately before publishing, run the configured
+scoped gate for every marked article source in each configured or newly
+introduced comparable authored namespace; exclude generated helper, evidence,
+and gate pages without article metadata, and never treat the current article
+list as fixed. Substitute the full-site gate only when shared configuration,
+themes, templates, navigation, build tooling, listing metadata, or another
+changed input may affect pages outside those namespaces. Verify links,
+interactive controls, console, mobile layout, accessible labels, and light/dark
+contrast.
 
 ## Decision record
 

@@ -5,6 +5,8 @@
 2. Edit [`.agents/research-workflow.json`](../../.agents/research-workflow.json):
    repository IDs, relative paths, roles, remotes, commit order, submodule
    ownership, article mapping, commands, and browser policy.
+   Configure the scoped publication gate recursively for every authored
+   namespace, and add comparable namespaces when introduced.
 3. Keep paths relative to the discovered Git root. Use no workstation-specific
    paths. Keep the supported schema version at `1` unless helper and skills are
    upgraded together.

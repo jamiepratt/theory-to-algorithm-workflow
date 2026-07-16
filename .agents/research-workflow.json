@@ -29,7 +29,7 @@
   ],
   "articles": {
     "repository": "publication",
-    "source_glob": "src/language_learning/vocabulary_estimation/*.clj",
+    "source_glob": "src/language_learning/vocabulary_estimation/**/*.clj",
     "source_marker": ":clay",
     "source_root": "src",
     "qmd_root": "site",
@@ -46,6 +46,7 @@
     ],
     "live_preview": "../.agents/scripts/vocabulary_preview.sh {source_relative}",
     "default_live_preview": "../.agents/scripts/vocabulary_preview.sh",
+    "scoped_publication_gate": "rg -l ':clay' src/language_learning/vocabulary_estimation --glob '*.clj' | while IFS= read -r source; do qmd=\"site/${source#src/}\"; qmd=\"${qmd%.clj}.qmd\"; quarto render \"$qmd\" || exit $?; done",
     "full_publication_gate": "quarto render site",
     "validation": [
       "clojure -M:test-clj",

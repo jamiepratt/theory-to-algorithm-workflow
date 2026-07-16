@@ -27,8 +27,12 @@ case study. Read [`CONTEXT.md`](CONTEXT.md), then use
 - Stage explicit paths. Preserve unrelated changes. Never rewrite history
   unless explicitly requested.
 - After Clojure edits, run `clj-paren-repair <changed-files>` before tests.
-- During article iteration, run only the configured targeted render. Run the
-  configured full-site gate once, immediately before publication push.
+- During article iteration, run only the configured targeted render. Immediately
+  before publication push, run the scoped publication gate for marked article
+  sources in all configured or newly introduced comparable authored
+  namespaces. Do not count generated helper/evidence pages as articles. Run the
+  full-site gate instead only when the diff may affect rendering outside those
+  namespaces.
 - Use Codex's internal browser. Protect the user's reading tab; verify in a
   separate tab, including console, mobile layout, labels, and light/dark
   contrast.

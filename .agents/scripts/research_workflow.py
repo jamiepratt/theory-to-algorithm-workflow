@@ -129,7 +129,7 @@ def load_and_validate(root: Path, profile_path: str | None) -> tuple[dict, Path]
     commands = required(profile, "commands", "profile")
     for key in (
         "targeted_render", "live_preview", "default_live_preview",
-        "full_publication_gate", "validation",
+        "scoped_publication_gate", "full_publication_gate", "validation",
     ):
         required(commands, key, "profile.commands")
     browser = required(profile, "browser_policy", "profile")

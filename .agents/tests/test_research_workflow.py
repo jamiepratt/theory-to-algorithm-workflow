@@ -50,6 +50,13 @@ class ResearchWorkflowProfileTest(unittest.TestCase):
         self.assertEqual(2, result.returncode)
         self.assertIn("Missing required field", result.stderr)
 
+    def test_missing_scoped_publication_gate_fails(self):
+        profile = copy.deepcopy(PROFILE)
+        del profile["commands"]["scoped_publication_gate"]
+        result = self.profile_result(profile)
+        self.assertEqual(2, result.returncode)
+        self.assertIn("Missing required field", result.stderr)
+
     def test_invalid_path_fails(self):
         profile = copy.deepcopy(PROFILE)
         profile["repositories"][0]["path"] = "missing-publication-repository"

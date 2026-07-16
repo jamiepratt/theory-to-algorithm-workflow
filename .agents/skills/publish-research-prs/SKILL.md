@@ -37,8 +37,24 @@ deriving its base from the configured remote's symbolic `HEAD`.
 Review `git diff --cached`, then commit with an imperative subject. Do not amend,
 rebase, reset, or overwrite history without explicit authorization.
 
-Immediately before the first publication-repository push, run the configured
-`full_publication_gate` once. Do not push after failure.
+Immediately before the first publication-repository push, inspect the scoped
+diff for cross-page rendering risk and run exactly one configured gate after
+the final change:
+
+- Default to `scoped_publication_gate`, which recursively finds publishable
+  article sources by the configured article marker and renders their matching
+  pages in each authored namespace. Exclude generated helper, evidence, and
+  gate pages without article metadata. Treat current articles as examples, not
+  a fixed list; add newly introduced comparable authored namespaces to the
+  configured scope.
+- Use `full_publication_gate` only when the diff may change rendering outside
+  that scope, such as shared Quarto configuration, themes, styles, brand files,
+  extensions, filters, templates, includes, navigation/listings or their input
+  metadata, shared resources, or publication build tooling.
+
+Do not run both unless acceptance criteria explicitly require both. Record the
+selected gate and, for a full-site render, the cross-page risk that required it.
+Do not push after failure.
 
 ## Push and open PRs
 
