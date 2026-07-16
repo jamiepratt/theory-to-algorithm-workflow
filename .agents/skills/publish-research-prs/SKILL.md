@@ -24,6 +24,34 @@ For a submodule change, commit and publish the configured source repository
 before staging the owner repository's pointer. Never copy source across the
 boundary.
 
+## Protect other contributors
+
+Treat `articles.authored_namespaces` as exact relative path-segment sequences
+owned by this workflow inside the publication repository, not loose substring
+matches. Before committing, inspect every staged path. Before pushing, inspect
+every path in commits not yet on the configured remote. A clean working tree
+does not make an outgoing commit safe.
+
+If any publication-repository path falls outside every authored namespace and
+might affect Civitas content, shared rendering, build behavior, or another
+contributor:
+
+1. Warn with the exact paths and likely impact.
+2. If the current request did not explicitly authorize those named effects,
+   stop before commit or push and ask for confirmation.
+3. Treat broad instructions such as “commit all” or “push everything” as
+   insufficient unless the cross-contributor paths and impact were already
+   surfaced to the user. One confirmation may cover both commit and push when
+   the warning explicitly says so.
+
+Exception: do not pause for confirmation when the commit and push are confined
+to a focused non-default branch solely to create or update a PR. Still audit,
+warn, and record the outside/shared paths and impact in the PR and handoff. This
+exception does not cover direct pushes to the default, deployment, or another
+shared branch; force pushes; approval; or merge.
+
+Never stage unrelated work. Record explicit authorization in the handoff.
+
 ## Validate and commit
 
 Run checks proportional to the change, using commands from the profile and
@@ -46,7 +74,7 @@ the final change:
   pages in each authored namespace. Exclude generated helper, evidence, and
   gate pages without article metadata. Treat current articles as examples, not
   a fixed list; add newly introduced comparable authored namespaces to the
-  configured scope.
+  configured scope and `articles.authored_namespaces`.
 - Use `full_publication_gate` only when the diff may change rendering outside
   that scope, such as shared Quarto configuration, themes, styles, brand files,
   extensions, filters, templates, includes, navigation/listings or their input

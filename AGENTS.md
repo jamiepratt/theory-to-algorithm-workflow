@@ -33,6 +33,14 @@ case study. Read [`CONTEXT.md`](CONTEXT.md), then use
   namespaces. Do not count generated helper/evidence pages as articles. Run the
   full-site gate instead only when the diff may affect rendering outside those
   namespaces.
+- Before committing or pushing the Civitas repository, audit staged paths and
+  outgoing commit paths against configured `articles.authored_namespaces`. Warn
+  with exact outside/shared paths and likely contributor impact. Unless the user
+  explicitly authorized those named effects, ask for confirmation before
+  commit or push; broad “commit all” or “push everything” wording is not enough.
+  A focused non-default branch pushed solely to create or update a PR is exempt
+  from the confirmation pause, but still requires the audit and disclosure.
+  Direct/shared-branch pushes, force pushes, approval, and merge are not exempt.
 - Use Codex's internal browser. Protect the user's reading tab; verify in a
   separate tab, including console, mobile layout, labels, and light/dark
   contrast.

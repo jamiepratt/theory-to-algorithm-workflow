@@ -19,6 +19,7 @@
 - Scoped article namespaces rendered:
 - Pre-push gate (`scoped_publication_gate` or `full_publication_gate`):
 - Full-site rationale (required only for `full_publication_gate`):
+- Outside/shared Civitas paths and authorization or PR-branch exception:
 
 ## Repository order
 

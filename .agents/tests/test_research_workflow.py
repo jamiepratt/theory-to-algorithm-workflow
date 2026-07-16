@@ -57,6 +57,20 @@ class ResearchWorkflowProfileTest(unittest.TestCase):
         self.assertEqual(2, result.returncode)
         self.assertIn("Missing required field", result.stderr)
 
+    def test_authored_namespace_escape_fails(self):
+        profile = copy.deepcopy(PROFILE)
+        profile["articles"]["authored_namespaces"] = ["../other-contributor"]
+        result = self.profile_result(profile)
+        self.assertEqual(2, result.returncode)
+        self.assertIn("escapes Git root", result.stderr)
+
+    def test_authored_namespace_cannot_cover_repository_root(self):
+        profile = copy.deepcopy(PROFILE)
+        profile["articles"]["authored_namespaces"] = ["."]
+        result = self.profile_result(profile)
+        self.assertEqual(2, result.returncode)
+        self.assertIn("must not resolve", result.stderr)
+
     def test_invalid_path_fails(self):
         profile = copy.deepcopy(PROFILE)
         profile["repositories"][0]["path"] = "missing-publication-repository"

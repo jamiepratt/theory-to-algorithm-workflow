@@ -29,6 +29,9 @@
   ],
   "articles": {
     "repository": "publication",
+    "authored_namespaces": [
+      "language_learning/vocabulary_estimation"
+    ],
     "source_glob": "src/language_learning/vocabulary_estimation/**/*.clj",
     "source_marker": ":clay",
     "source_root": "src",

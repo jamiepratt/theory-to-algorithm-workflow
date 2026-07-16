@@ -109,14 +109,26 @@ def load_and_validate(root: Path, profile_path: str | None) -> tuple[dict, Path]
 
     articles = required(profile, "articles", "profile")
     for key in (
-        "repository", "source_glob", "source_marker", "source_root", "qmd_root",
-        "generated_root", "source_suffix", "qmd_suffix", "generated_suffix",
-        "preview_base_url",
+        "repository", "authored_namespaces", "source_glob", "source_marker",
+        "source_root", "qmd_root", "generated_root", "source_suffix",
+        "qmd_suffix", "generated_suffix", "preview_base_url",
     ):
         required(articles, key, "profile.articles")
     if articles["repository"] not in ids:
         fail(f"Unknown article repository: {articles['repository']}")
     article_repo = resolved_repositories[articles["repository"]]
+    namespaces = articles["authored_namespaces"]
+    if not isinstance(namespaces, list) or not namespaces:
+        fail("profile.articles.authored_namespaces must be a non-empty array")
+    for index, namespace in enumerate(namespaces):
+        where = f"profile.articles.authored_namespaces[{index}]"
+        if not isinstance(namespace, str) or not namespace.strip():
+            fail(f"{where} must be a non-empty relative path")
+        resolved_namespace = safe_path(
+            article_repo, namespace, where, must_exist=False
+        )
+        if resolved_namespace == article_repo:
+            fail(f"{where} must not resolve to the publication repository root")
     for key in ("source_root", "qmd_root"):
         safe_path(article_repo, articles[key], f"profile.articles.{key}")
     safe_path(

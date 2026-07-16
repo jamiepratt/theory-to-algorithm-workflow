@@ -6,7 +6,10 @@
    repository IDs, relative paths, roles, remotes, commit order, submodule
    ownership, article mapping, commands, and browser policy.
    Configure the scoped publication gate recursively for every authored
-   namespace, and add comparable namespaces when introduced.
+   namespace, list each in `articles.authored_namespaces`, and add comparable
+   namespaces when introduced. The publish skill uses that list to guard other
+   contributors' paths before commit and push. A focused non-default PR branch
+   keeps audit and disclosure but does not require the confirmation pause.
 3. Keep paths relative to the discovered Git root. Use no workstation-specific
    paths. Keep the supported schema version at `1` unless helper and skills are
    upgraded together.

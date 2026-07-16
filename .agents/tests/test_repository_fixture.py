@@ -75,7 +75,7 @@ class RepositoryMutationFixtureTest(unittest.TestCase):
                 "submodules": [
                     {"path": "publication", "owner_repository": "workflow", "source_repository": "publication", "url": str(publication_remote), "pointer_behavior": "commit-and-publish-source-before-owner-pointer"}
                 ],
-                "articles": {"repository": "publication", "source_glob": "src/**/*.clj", "source_marker": ":clay", "source_root": "src", "qmd_root": "site", "generated_root": "site/_site", "source_suffix": ".clj", "qmd_suffix": ".qmd", "generated_suffix": ".html", "preview_base_url": "http://127.0.0.1:1971"},
+                "articles": {"repository": "publication", "authored_namespaces": ["article"], "source_glob": "src/**/*.clj", "source_marker": ":clay", "source_root": "src", "qmd_root": "site", "generated_root": "site/_site", "source_suffix": ".clj", "qmd_suffix": ".qmd", "generated_suffix": ".html", "preview_base_url": "http://127.0.0.1:1971"},
                 "commands": {"targeted_render": ["render {source_relative}"], "live_preview": "preview {source_relative}", "default_live_preview": "preview", "scoped_publication_gate": "scoped-publish-gate", "full_publication_gate": "full-publish-gate", "validation": ["test"]},
                 "browser_policy": {"browser": "codex-internal-browser", "protect_reading_tabs": True, "verification_tab": "separate", "checks": ["console-errors"]},
             }
