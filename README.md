@@ -46,11 +46,23 @@ cd theory-to-algorithm-workflow
 python3 .agents/scripts/research_workflow.py validate
 ```
 
-Preview the configured article repository:
+Preview the configured article with the workflow-owned local preview:
 
 ```sh
-cd clojurecivitas.github.io
-clojure -M:clay
+.agents/scripts/vocabulary_preview.sh
+```
+
+Pass a source path relative to the Civitas `src/` directory to choose an
+article explicitly. The wrapper injects this case study's preview behavior
+without changing Civitas's shared Clay entry point or project defaults. Inside
+the submodule, `clojure -M:clay` remains the standard contributor workflow.
+
+Run the configured vocabulary tests without adding case-specific aliases to
+Civitas's shared `deps.edn`:
+
+```sh
+.agents/scripts/vocabulary_tests.sh clj
+.agents/scripts/vocabulary_tests.sh cljs
 ```
 
 Use the repository-local skills for repeatable operations:

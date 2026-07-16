@@ -52,8 +52,8 @@
     "scoped_publication_gate": "rg -l ':clay' src/language_learning/vocabulary_estimation --glob '*.clj' | while IFS= read -r source; do qmd=\"site/${source#src/}\"; qmd=\"${qmd%.clj}.qmd\"; quarto render \"$qmd\" || exit $?; done",
     "full_publication_gate": "quarto render site",
     "validation": [
-      "clojure -M:test-clj",
-      "clojure -M:test-cljs"
+      "../.agents/scripts/vocabulary_tests.sh clj",
+      "../.agents/scripts/vocabulary_tests.sh cljs"
     ]
   },
   "browser_policy": {

@@ -30,6 +30,11 @@ origin matches the running server. For a healthy pre-existing server whose
 startup output is unavailable, confirm its listener and require HTTP 200 at the
 exact URL.
 
+Treat `live_preview` as the workflow integration boundary. Do not modify a
+publication repository's shared preview entry point or project defaults merely
+to implement workflow-specific behavior; update its profile or workflow-owned
+wrapper instead.
+
 ## Protect and verify
 
 Follow `browser_policy` from the profile. Never reload, navigate, resize, or
