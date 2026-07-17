@@ -18,6 +18,25 @@ decisions across the complete measurement chain:
    complete item;
 3. infer receptive pair knowledge and calibrated uncertainty from responses.
 
+Pair knowledge is an intermediate, countable research target. The eventual
+learner-facing quantity remains estimated receptive Polish lemmas; do not imply
+that a pair count already solves the lemma-inference problem.
+
+The opening sequence is durable:
+
+1. **Managing Brilliant but Uneven Minds** — how the research is organised;
+2. **Why Estimate Vocabulary?** — learner purpose and the measurement chain;
+3. **Bayes’ Theorem: From Uncertainty to Decision** — necessary foundations;
+4. **Proposal 1: Estimating Known Pairs** — the current research target;
+5. **Proposal 2: Does Pair Frequency Predict Responses?** — a preserved,
+   non-promoted experimental checkpoint.
+
+Use an approachable title, a precise subtitle, one concrete reader question at
+a time, and define technical language when it becomes necessary. Keep reader
+labels beside exact algorithm IDs, distinguish teaching simulations from model
+validation and representative learner evidence, and state explicitly whenever
+an article does not describe the scorer deployed at LexiBench.
+
 The direction of travel is the shortest test that satisfies defined, broad
 measurement-quality standards: construct validity, low bias and error,
 calibrated uncertainty, and robustness across relevant learner and item groups.
