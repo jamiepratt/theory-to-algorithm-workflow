@@ -28,12 +28,19 @@ fixtures, evidence, tests, and publication rendering.
 
 - Estimand: receptive knowledge of lemma–surface-form pairs in a fixed,
   versioned pool.
-- Current target: `stratified-beta-binomial-v1`.
-- Experimental checkpoint: `continuous-pair-frequency-logistic-v2`.
+- Eventual learner-facing quantity: estimated receptive Polish lemmas. Pair
+  knowledge remains the deliberately narrower intermediate target.
+- Proposal 1, reader label **“estimating known pairs”**: exact algorithm ID
+  `stratified-beta-binomial-v1`; current research target.
+- Proposal 2, reader label **“does pair frequency predict responses?”**: exact
+  algorithm ID `continuous-pair-frequency-logistic-v2`; preserved experimental
+  checkpoint.
 - V2 decision: not promoted. Aggregate coverage and error improved, but the
   held-out candidate missed worst-cell coverage, worst-cell MAE ratio, and
   median-length requirements. V1 therefore remains current.
-- Neither article describes the scorer currently deployed at Lexibench.
+- The scorer currently deployed at LexiBench is distinct from both proposals.
+  Published UI/output captures document the learner experience; they do not
+  establish that either Proposal 1 or Proposal 2 is deployed.
 
 ## Stable invariants
 
