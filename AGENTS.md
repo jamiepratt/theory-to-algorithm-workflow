@@ -4,6 +4,28 @@ This repository is a reusable workflow plus one completed vocabulary-estimation
 case study. Read [`CONTEXT.md`](CONTEXT.md), then use
 [`CONTEXT-MAP.md`](CONTEXT-MAP.md) to load only task-relevant detail.
 
+## Article-series purpose
+
+The vocabulary-estimation articles are a Jamie-first curriculum that must also
+stand alone for any educated lay reader; assume no prior statistics or
+psychometrics. Introduce theory gradually, in service of concrete design
+decisions across the complete measurement chain:
+
+1. construct and version the target pool of lemma–surface-form pairs, then
+   select administered items efficiently;
+2. design each multiple-choice item's context, intended meaning, translation,
+   and distractors, then version, pilot, calibrate, diagnose, and revise the
+   complete item;
+3. infer receptive pair knowledge and calibrated uncertainty from responses.
+
+The direction of travel is the shortest test that satisfies defined, broad
+measurement-quality standards: construct validity, low bias and error,
+calibrated uncertainty, and robustness across relevant learner and item groups.
+Optimize length only among candidates that pass those standards. “Most
+accurate possible” is an aspiration, not a global-optimality claim: compare
+versioned candidates with baselines, distinguish simulations from
+representative learner evidence, and claim only what the evidence supports.
+
 ## Hot path
 
 - Load and validate [`.agents/research-workflow.json`](.agents/research-workflow.json)
