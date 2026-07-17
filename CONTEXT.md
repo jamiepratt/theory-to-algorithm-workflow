@@ -46,6 +46,8 @@ fixtures, evidence, tests, and publication rendering.
 - Report pool ID/version, algorithm ID/version, estimate, and interval together;
   never report an unqualified count of “words known.”
 - Preserve immutable inputs and original events for deterministic replay.
+- Workflow-owned preview and test commands must not require cleanup changes to
+  Civitas's shared tooling.
 
 ## Authority order
 

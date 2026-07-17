@@ -26,6 +26,10 @@ case study. Read [`CONTEXT.md`](CONTEXT.md), then use
 
 - Stage explicit paths. Preserve unrelated changes. Never rewrite history
   unless explicitly requested.
+- Commit every completed, validated workflow-repository change immediately on
+  the current branch. Keep each commit scoped; do not include the Civitas
+  submodule pointer or publication-repository work unless that repository's
+  workflow calls for it. Do not push unless explicitly requested.
 - After Clojure edits, run `clj-paren-repair <changed-files>` before tests.
 - During article iteration, run only the configured targeted render. Immediately
   before publication push, run the scoped publication gate for marked article

@@ -1,4 +1,4 @@
 interface:
   display_name: "Publish Research PRs"
-  short_description: "Commit, validate, push, and open research PRs"
+  short_description: "Prepare previews, validate, and publish research PRs"
   default_prompt: "Use $publish-research-prs to validate and publish the current scoped research changes in configured repository order."

@@ -40,7 +40,7 @@
     "source_suffix": ".clj",
     "qmd_suffix": ".qmd",
     "generated_suffix": ".html",
-    "preview_base_url": "http://127.0.0.1:1971"
+    "preview_base_url": "http://localhost:1971"
   },
   "commands": {
     "targeted_render": [

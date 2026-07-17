@@ -40,6 +40,8 @@ wrapper instead.
 Follow `browser_policy` from the profile. Never reload, navigate, resize, or
 close the user's reading tab. Use a separate verification tab and check every
 configured item, including page styling, navigation, console, mobile layout,
-labels, and theme contrast. Require `pin_matches_head` unless intentionally
-previewing an unpublished publication commit. Report source, selection basis,
-pinned commit, repository `HEAD`, and URL.
+labels, and theme contrast. Local iteration may continue when
+`pin_matches_head` is false; disclose that the checkout is not the reproducible
+commit recorded by the workflow repository. Publication verification requires
+`pin_matches_head` to be true. Report source, selection basis, pinned commit,
+repository `HEAD`, and URL.

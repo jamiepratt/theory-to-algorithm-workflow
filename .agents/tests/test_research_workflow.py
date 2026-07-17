@@ -40,7 +40,10 @@ class ResearchWorkflowProfileTest(unittest.TestCase):
         self.assertTrue(article["source"].endswith(".clj"))
         self.assertTrue(article["generated"].endswith(".html"))
         self.assertTrue(article["preview_path"].endswith(".html"))
-        self.assertTrue(article["pin_matches_head"])
+        self.assertEqual(
+            article["pinned_commit"] == article["repository_head"],
+            article["pin_matches_head"],
+        )
         self.assertEqual(2, len(article["targeted_render"]))
 
     def test_missing_field_fails(self):

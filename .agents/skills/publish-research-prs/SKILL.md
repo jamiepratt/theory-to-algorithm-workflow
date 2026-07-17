@@ -1,6 +1,6 @@
 ---
 name: publish-research-prs
-description: Commit scoped research-workflow changes, run configured gates, publish repositories in profile order, and create pull requests. Use when asked to commit, publish, push, or open PRs across configured research and publication repositories.
+description: Commit scoped research-workflow changes, prepare article preview images, run configured gates, publish repositories in profile order, and create pull requests. Use when asked to commit, publish, push, or open PRs across configured research and publication repositories.
 ---
 
 # Publish Research PRs
@@ -51,6 +51,31 @@ exception does not cover direct pushes to the default, deployment, or another
 shared branch; force pushes; approval; or merge.
 
 Never stage unrelated work. Record explicit authorization in the handoff.
+
+## Prepare article preview images
+
+Treat the blog and social preview image as a required publication artifact for
+every new or changed executable article. After a targeted render, inspect the
+article in the internal browser and select the visual that best communicates its
+subject at small size. Prefer a real rendered simulation, interactive chart, or
+other distinctive article UI. If the article has no such visual, use its
+strongest explanatory figure or process diagram. Do not substitute synthetic
+art when the article already contains a representative rendered visual.
+
+Capture a deterministic, meaningful state with readable labels and controls.
+Use a social-friendly 1200×630 PNG unless repository conventions require
+another format. Store it beside the article source with a stable descriptive
+name, then set both Quarto `:image` and descriptive `:image-alt` metadata. Reuse
+an existing image only after confirming it still represents the current
+article; recapture it when the featured UI or claim changed.
+
+Render the article and its listing page. In a separate browser tab, verify the
+article's Open Graph image metadata and any configured Twitter/X image metadata,
+the desktop and mobile listing card, alt text, legibility, navigation, and
+console. Include the image and its
+selection rationale in the PR summary. Because `:image` is listing input
+metadata, adding or changing it requires the configured full publication gate
+immediately before push.
 
 ## Validate and commit
 

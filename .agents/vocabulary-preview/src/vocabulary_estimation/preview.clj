@@ -4,6 +4,7 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [ring.util.mime-type :as mime-type]
+            [vocabulary-estimation.preview-html :as preview-html]
             [scicloj.clay.v2.main :as clay-main]
             [scicloj.clay.v2.server :as clay-server]
             [scicloj.clay.v2.server.state :as server-state]
@@ -15,6 +16,8 @@
 
 (def preview-root "temp")
 (def published-root "site/_site")
+
+(def clay-wrap-html clay-server/wrap-html)
 
 (def preview-config
   {:watch-dirs ["src"]
@@ -78,6 +81,15 @@
           args
           [default-preview-source])))
 
+(defn- install-origin-preserving-wrapper! []
+  (alter-var-root
+   #'clay-server/wrap-html
+   (constantly
+    (fn [html state]
+      (preview-html/preserve-origin
+       (clay-wrap-html html state))))))
+
 (defn -main [& args]
+  (install-origin-preserving-wrapper!)
   (clay-server/install-handler! #'preview-fallback-handler)
   (apply clay-main/-main (args-with-preview-config args)))
